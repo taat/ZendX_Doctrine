@@ -1,0 +1,30 @@
+<h2>Sliding Paginator Controller</h2>
+
+<?php echo $this->navigation()->menu(); ?>
+
+<h3>Items from database</h3>
+
+<?php if (count($this->paginator)): ?>
+<ul>
+<?php foreach ($this->paginator as $item): ?>
+<li><?php echo $item->teststring; ?></li>
+<?php endforeach; ?>
+</ul>
+<?php endif; ?>
+
+<h3>Sliding navigations</h3>
+<h4>TAAT pagination</h4>
+    <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml'); ?>
+<h4>Search pagination</h4>
+    <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_search.phtml'); ?>
+<h4>Item pagination</h4>
+    <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_item.phtml'); ?>
+<h4>Dropdown pagination</h4>
+    <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_dropdown.phtml'); ?>
+<h4>Default pagination</h4>
+    <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_default.phtml'); ?>
+<h4>Always pagination</h4>
+    <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_always.phtml'); ?>
+
+<h4>Brackets pagination</h4>
+    <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_brackets.phtml'); ?>

@@ -1,0 +1,14 @@
+# application environment
+SetEnv APPLICATION_ENV development
+
+# disable magic quotes
+# php_flag magic_quotes_gpc Off
+
+# redirect imaginary urls to index.php
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^.*$ - [NC,L]
+RewriteRule ^.*$ index.php [NC,L]
+        

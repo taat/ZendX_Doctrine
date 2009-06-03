@@ -1,0 +1,29 @@
+<h2>All Pagnation Controller</h2>
+
+<?php echo $this->navigation()->menu(); ?>
+
+<h3>Items from database</h3>
+
+<?php if (count($this->paginator)): ?>
+<ul>
+<?php foreach ($this->paginator as $item): ?>
+<li><?php echo $item->teststring; ?></li>
+<?php endforeach; ?>
+</ul>
+<?php endif; ?>
+
+<h3>All navigations</h3>
+<h4>All: TAAT pagination</h4>
+<?php echo $this->paginationControl($this->paginator, 'All', 'pagination.phtml'); ?>
+<h4>All: Search pagination</h4>
+<?php echo $this->paginationControl($this->paginator, 'All', 'pagination_search.phtml'); ?>
+<h4>All: Item pagination</h4>
+<?php echo $this->paginationControl($this->paginator, 'All', 'pagination_item.phtml'); ?>
+<h4>All: Dropdown pagination</h4>
+<?php echo $this->paginationControl($this->paginator, 'All', 'pagination_dropdown.phtml'); ?>
+<h4>All: Default pagination</h4>
+<?php echo $this->paginationControl($this->paginator, 'All', 'pagination_default.phtml'); ?>
+<h4>All: Always pagination</h4>
+<?php echo $this->paginationControl($this->paginator, 'All', 'pagination_always.phtml'); ?>
+<h4>All: Brackets pagination</h4>
+<?php echo $this->paginationControl($this->paginator, 'All', 'pagination_brackets.phtml'); ?>

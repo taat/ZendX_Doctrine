@@ -1,0 +1,30 @@
+<h2>Elastic pagination Controller</h2>
+
+<?php echo $this->navigation()->menu(); ?>
+
+<h3>Items from database</h3>
+
+<?php if (count($this->paginator)): ?>
+<ul>
+<?php foreach ($this->paginator as $item): ?>
+<li><?php echo $item->teststring; ?></li>
+<?php endforeach; ?>
+</ul>
+<?php endif; ?>
+
+
+<h3>Elastic navigations</h3>
+<h4>Elastic: TAAT pagination</h4>
+<?php echo $this->paginationControl($this->paginator, 'Elastic', 'pagination.phtml'); ?>
+<h4>Elastic: Search pagination</h4>
+<?php echo $this->paginationControl($this->paginator, 'Elastic', 'pagination_search.phtml'); ?>
+<h4>Elastic: Item pagination</h4>
+<?php echo $this->paginationControl($this->paginator, 'Elastic', 'pagination_item.phtml'); ?>
+<h4>Elastic: Dropdown pagination</h4>
+<?php echo $this->paginationControl($this->paginator, 'Elastic', 'pagination_dropdown.phtml'); ?>
+<h4>Elastic: Default pagination</h4>
+<?php echo $this->paginationControl($this->paginator, 'Elastic', 'pagination_default.phtml'); ?>
+<h4>Elastic: Always pagination</h4>
+<?php echo $this->paginationControl($this->paginator, 'Elastic', 'pagination_always.phtml'); ?>
+<h4>Elastic: Brackets pagination</h4>
+<?php echo $this->paginationControl($this->paginator, 'Elastic', 'pagination_brackets.phtml'); ?>

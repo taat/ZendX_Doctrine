@@ -1,0 +1,9 @@
+---
+Session:
+    columns:
+        id:
+            type: string(32)
+            primary: true
+        modified: integer(4)
+        lifetime: integer(4)
+        data: clob

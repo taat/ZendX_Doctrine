@@ -1,0 +1,48 @@
+<?php if ($this->pageCount): ?>
+<div class="paginationControl">
+
+<!-- Previous page link -->
+<?php if (isset($this->previous)): ?>
+<a href="<?php echo $this->url(array('page' => $this->previous)); ?>">Previous</a>
+<?php endif; ?>
+
+<!-- First Page link -->
+<?php if (isset($this->first) && ($this->first != $this->current) && ($this->firstPageInRange>1)): ?>
+<?php if ($this->firstPageInRange>2): ?>
+<a href="<?php echo $this->url(array('page' => $this->first)); ?>">First</a>
+<?php else: ?>
+<a href="<?php echo $this->url(array('page' => $this->first)); ?>">1</a>
+<?php endif; ?>
+<?php if ($this->firstPageInRange>2): ?>
+...
+<?php endif; ?>
+<?php endif; ?>
+
+<!-- Numbered page links -->
+<?php foreach ($this->pagesInRange as $page): ?>
+<?php if ($page != $this->current): ?>
+<a href="<?php echo $this->url(array('page' => $page)); ?>"><?php echo $page; ?></a>
+<?php else: ?>
+<strong class="page-current"><?php echo $page; ?></strong>
+<?php endif; ?>
+<?php endforeach; ?>
+
+<!-- Last Page link -->
+<?php if (isset($this->last) && ($this->last != $this->current)): ?>
+...
+<a href="<?php echo $this->url(array('page' => $this->last)); ?>"><?php echo $this->last; ?> (Last)</a>
+<?php endif; ?>
+
+<!-- Next page link -->
+<?php if (isset($this->next)): ?>
+<a href="<?php echo $this->url(array('page' => $this->next)); ?>">Next</a>
+<?php endif; ?>
+
+</div>
+<?php endif; ?>
+
+<div id="paginator-stats">
+Page <?php echo $this->current ?> of <?php echo $this->pageCount ?>
+</div>
+
+

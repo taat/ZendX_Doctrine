@@ -1,0 +1,29 @@
+<h2>Jumping Pagination Controller</h2>
+
+<?php echo $this->navigation()->menu(); ?>
+
+<h3>Items from database</h3>
+
+<?php if (count($this->paginator)): ?>
+<ul>
+<?php foreach ($this->paginator as $item): ?>
+<li><?php echo $item->teststring; ?></li>
+<?php endforeach; ?>
+</ul>
+<?php endif; ?>
+
+<h3>Jumping paginator</h3>
+<h4>Jumping: TAAT pagination</h4>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination.phtml'); ?>
+<h4>Jumping: Search pagination</h4>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_search.phtml'); ?>
+<h4>Jumping: Item pagination</h4>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_item.phtml'); ?>
+<h4>Jumping: Dropdown pagination</h4>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_dropdown.phtml'); ?>
+<h4>Jumping: Default pagination</h4>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_default.phtml'); ?>
+<h4>Jumping: Always pagination</h4>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_always.phtml'); ?>
+<h4>Jumping: Brackets pagination</h4>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_brackets.phtml'); ?>

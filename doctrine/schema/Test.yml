@@ -1,0 +1,7 @@
+---
+Test:
+    actAs:
+        Timestampable
+    columns:
+        testint: integer(4)
+        teststring: string(50)

@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        <title>Test page</title>
+        <style type="text/css">
+        /*<![CDATA[*/
+
+
+        body, html {
+            text-align:center;
+        }
+
+        #page-container {
+            margin:0 auto;
+            text-align:left;
+            width:55em;
+        }
+
+
+
+        body {font-size:0.7;font-family:sans-serif;}
+
+        h4 {background:#222;color:white;margin-top:3em;width:100%;}
+
+        /*]]>*/
+        </style>
+    </head>
+
+    <body id="index">
+        <div id="page-container">
+            <h1>Main layout</h1>
+            <?= $this->layout()->content ?>
+        </div>
+    </body>
+</html>

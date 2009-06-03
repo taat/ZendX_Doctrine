@@ -1,0 +1,96 @@
+<h2>Pagination Controller</h2>
+
+<?php echo $this->navigation()->menu(); ?>
+
+<h3>Items from database</h3>
+
+<?php if (count($this->paginator)): ?>
+<ul>
+<?php foreach ($this->paginator as $item): ?>
+<li><?php echo $item->teststring; ?></li>
+<?php endforeach; ?>
+</ul>
+<?php endif; ?>
+
+<h3>Navigation examples</h3>
+
+<h4>Sliding navigations</h4>
+<h5>Sliding: TAAT pagination</h5>
+    <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml'); ?>
+<h5>Sliding: Search pagination</h5>
+    <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_search.phtml'); ?>
+<h5>Sliding: Item pagination</h5>
+    <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_item.phtml'); ?>
+<h5>Sliding: Dropdown pagination</h5>
+    <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_dropdown.phtml'); ?>
+<h5>Sliding: Default pagination</h5>
+    <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_default.phtml'); ?>
+<h5>Sliding: Always pagination</h5>
+    <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_always.phtml'); ?>
+
+<h5>Sliding: Brackets pagination</h5>
+    <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_brackets.phtml'); ?>
+
+<h4>Jumping navigations</h4>
+<h5>Jumping: TAAT pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination.phtml'); ?>
+<h5>Jumping: Search pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_search.phtml'); ?>
+<h5>Jumping: Item pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_item.phtml'); ?>
+<h5>Jumping: Dropdown pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_dropdown.phtml'); ?>
+<h5>Jumping: Default pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_default.phtml'); ?>
+<h5>Jumping: Always pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_always.phtml'); ?>
+<h5>Jumping: Brackets pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_brackets.phtml'); ?>
+
+<h4>Jumping navigations</h4>
+<h5>Jumping: TAAT pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination.phtml'); ?>
+<h5>Jumping: Search pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_search.phtml'); ?>
+<h5>Jumping: Item pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_item.phtml'); ?>
+<h5>Jumping: Dropdown pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_dropdown.phtml'); ?>
+<h5>Jumping: Default pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_default.phtml'); ?>
+<h5>Jumping: Always pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_always.phtml'); ?>
+<h5>Jumping: Brackets pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_brackets.phtml'); ?>
+
+<h4>Jumping navigations</h4>
+<h5>Jumping: TAAT pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination.phtml'); ?>
+<h5>Jumping: Search pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_search.phtml'); ?>
+<h5>Jumping: Item pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_item.phtml'); ?>
+<h5>Jumping: Dropdown pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_dropdown.phtml'); ?>
+<h5>Jumping: Default pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_default.phtml'); ?>
+<h5>Jumping: Always pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_always.phtml'); ?>
+<h5>Jumping: Brackets pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'Jumping', 'pagination_brackets.phtml'); ?>
+
+<h4>All navigations</h4>
+<h5>All: TAAT pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'All', 'pagination.phtml'); ?>
+<h5>All: Search pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'All', 'pagination_search.phtml'); ?>
+<h5>All: Item pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'All', 'pagination_item.phtml'); ?>
+<h5>All: Dropdown pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'All', 'pagination_dropdown.phtml'); ?>
+<h5>All: Default pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'All', 'pagination_default.phtml'); ?>
+<h5>All: Always pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'All', 'pagination_always.phtml'); ?>
+<h5>All: Brackets pagination</h5>
+<?php echo $this->paginationControl($this->paginator, 'All', 'pagination_brackets.phtml'); ?>
