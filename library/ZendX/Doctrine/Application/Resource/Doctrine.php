@@ -1,168 +1,68 @@
 <?php
-class ZendX_Doctrine_Application_Resource_Doctrine extends Zend_Application_Resource_ResourceAbstract
+
+/**
+ * Application resource Doctrine
+ */
+class ZendX_Doctrine_Application_Resource_Doctrine
+    extends Zend_Application_Resource_ResourceAbstract
 {
     /**
-     * @var Doctrine_Manager
+     * @var array
      */
-    protected $_manager = null;
+     protected $_resources = array();
 
     /**
-     * Initialize Doctrine
+     * Defined by Zend_Application_Resource_Resource
      *
-     * @return bool
+     * @return  void
+     * @throws  Zend_Application_Resource_Exception
      */
     public function init()
     {
-        // register Doctrine namespace
-        $autoloader = Zend_Loader_Autoloader::getInstance();
-        $autoloader->registerNamespace('Doctrine');
+        
+        // Register Doctrine autoloader
+        require_once 'Doctrine.php';
+        $loader = Zend_Loader_Autoloader::getInstance();
+        $loader->pushAutoloader(array('Doctrine', 'autoload'));
 
-        // @bug Model class loading fails without fallback autoloader
-        // @see
-        // http://www.nabble.com/Autoload-models-with-no-namespace-to23387744.html
-        //
-        // we could disable fallback autoloader and use:
-        // Doctrine::loadModels($options['paths']['models_path']);
-        // but it works only with MODEL_LOADING_AGGRESIVE (default, but slower),
-        // so always use resources.doctrine.attributes.model_loading = "conservative"
-
-        Zend_Loader_Autoloader::getInstance()->setFallbackAutoloader(true);
-
-        $options = &$this->_options;
-
-        if ((is_array($options)) || (!empty($options))) {
-
-            if ((isset($options['debug'])) && (!empty($options['debug']))) {
-                $this->getDebug($options['debug']);
-            }
-
-            if ((isset($options['attributes'])) && (!empty($options['attributes']))) {
-                $this->getAttributes($options['attributes']);
-            }
-
-            $this->getPaths();
-            // Doctrine::loadModels($options['paths']['models_path']);
-
-            if ((isset($options['connections'])) && (!empty($options['connections']))) {
-                $this->getConnections($options['connections']);
-            }
-
-            if ((isset($options['session'])) && (!empty($options['session']))) {
-                $this->setSessionHandler($options['session']);
-            }
+        if (1 !== (int) substr(Doctrine::VERSION, 0, 1)) {
+            require_once 'Zend/Application/Resource/Exception.php';
+            throw new Zend_Application_Resource_Exception('Support is limited to Doctrine 1.x.');
         }
 
-        return $this->getManager();
-    }
+        $options = $this->getOptions();
 
-    /**
-     * Retrieve manager instance
-     *
-     * @return Doctrine_Manager
-     * @throws ZendX_Doctrine_Application_Resource_Exception If unable to retrieve manager instance.
-     */
-    public function getManager()
-    {
-        if (NULL === $this->_manager) {
-            try {
-                $this->_manager = Doctrine_Manager::getInstance();
-            } catch (Doctrine_Exception $e) {
-                throw new
-                ZendX_Doctrine_Application_Resource_Exception('Unable to retrieve Doctrine_Manager instance.');
-            }
+        if (array_key_exists('paths', $options)) {
+            // user paths
+            $this->_initPaths($options['paths']);
+        } else {
+            // default paths
+            $this->_initPaths();
         }
 
-        return $this->_manager;
-    }
-
-    /**
-     * Set global attributes
-     *
-     * @param array $attributes
-     * @return ZendX_Doctrine_Application_Resource_Doctrine
-     */
-    public function getAttributes(array $attributes = array())
-    {
-        foreach($attributes as $key => $value) {
-            $this->getManager()->setAttribute($key, $value);
+        if (array_key_exists('manager', $options)) {
+            $this->_initManager($options['manager']);
         }
 
-        return $this;
-    }
-
-    /**
-     * Lazy load connections
-     *
-     * @param array $connections
-     * @return ZendX_Doctrine_Application_Resource_Doctrine
-     * @throws ZendX_Doctrine_Application_Resource_Exception If Doctrine resource dsn is wrong
-     * @see Zend_Application_Resource_ResourceAbstract
-     * @todo Handle event listeners
-     */
-    public function getConnections(array $connections = array())
-    {
-        foreach($connections as $name => $params) {
-            if ((!isset($params['dsn'])) || (empty($params['dsn']))) {
-                throw new
-                ZendX_Doctrine_Application_Resource_Exception('Doctrine
-                                                              resource dsn not present.');
-            }
-
-            $dsn = null;
-            $options = null;
-
-            if (is_string($params['dsn'])) {
-                $dsn = $params['dsn'];
-            } elseif (is_array($params['dsn'])) {
-                $dsn = $this->_buildConnectionString($params['dsn']);
-            } else {
-                throw new
-                ZendX_Doctrine_Application_Resource_Exception("Invalid
-                                                              Doctrine resource dsn format.");
-            }
-
-            try {
-                $conn = Doctrine_Manager::connection($dsn, $name);
-
-                if ((isset($params['attributes'])) && (!empty($params['attributes']))) {
-                    foreach ($params['attributes'] as $key => $value) {
-                        $conn->setAttribute($key, $value);
-                    }
-                }
-            } catch(Doctrine_Exception $e) {
-                throw new
-                ZendX_Doctrine_Application_Resource_Exception("Unable to
-                                                              establish database connection. Check application.ini settings.");
-            }
+        if (array_key_exists('connections', $options)) {
+            $this->_initConnections($options['connections']);
         }
 
-        return $this;
+        return $this->_resources;
     }
 
     /**
-     * Set the debug status
+     * Initialize Doctrine paths
      *
-     * @param  bool $debug
-     * @return ZendX_Doctrine_Application_Resource_Doctrine
+     * @param   array $options
+     * @return  void
      */
-    public function getDebug($debug = 0)
+    protected function _initPaths($options = array())
     {
-        Doctrine::debug($debug);
+        $this->_resources['paths'] = $options;
 
-        return $this;
-    }
-
-    /**
-     * Add global paths to the registry
-     *
-     * @param  array $paths
-     * @return ZendX_Doctrine_Application_Resource_Doctrine
-     */
-    public function getPaths()
-    {
-        // set default paths
-
-        $paths = &$this->_options['paths'];
+        // set default options
+        $paths = &$this->_resources['paths'];
         // apply default paths if not set in application.ini
         $defaults = array(
                           'data_fixtures_path' => APPLICATION_PATH . '/../doctrine/data/fixtures/',
@@ -179,113 +79,189 @@ class ZendX_Doctrine_Application_Resource_Doctrine extends Zend_Application_Reso
             }
         }
 
-        Zend_Registry::set('doctrine', array('paths' => $paths));
+        $application = $this->getBootstrap()->getApplication();
+        $application->setOptions(array('doctrine' => $paths));
 
-        // add models and generated models path to the include_path
-        set_include_path(implode(PATH_SEPARATOR, array(
-                                                       $paths['models_path'],
-                                                       $paths['generated_models_path'],
-                                                       get_include_path(),
-                                                       )));
+        Doctrine::loadModels($paths['models_path']);
 
-        return $this;
     }
 
-
-
     /**
-     * Build connection string
+     * Initialize the Doctrine_Manager
      *
-     * @param  array $dsnData
-     * @return string
+     * @param   array $options
+     * @return  void
      */
-    private function _buildConnectionString(array $dsnData = array())
+    protected function _initManager(array $options)
     {
-        $connectionOptions = null;
-        if ((isset($dsnData['options'])) || (!empty($dsnData['options']))) {
-            $connectionOptions = $this->_buildConnectionOptionsString($dsnData['options']);
+        if (array_key_exists('attributes', $options)) {
+            $manager = Doctrine_Manager::getInstance();
+            $this->_setAttributes($manager, $options['attributes']);
         }
 
-        // @see
-        // http://www.doctrine-project.org/documentation/manual/1_1/en/introduction-to-connections
-        return sprintf('%s://%s:%s@%s/%s?%s',
-                       $dsnData['adapter'],
-                       $dsnData['user'],
-                       $dsnData['pass'],
-                       $dsnData['hostspec'],
-                       $dsnData['database'],
-                       $connectionOptions);
     }
 
     /**
-     * Enable or disable Doctrine Session SaveHandler
-     * @param array $options Doctrine Session SaveHandler options: handler.enabled and lifetime).
-     *                       If at least one of those two is set (true), session is enabled.
+     * Initialize Doctrine connections
      *
-     * @throws ZendX_Doctrine_Application_Resource_Exception If session table is inaccesible.
-     * @return ZendX_Doctrine_Application_Resource_Doctrine
+     * @param   array $options
+     * @return  void
+     * @throws  Zend_Application_Resource_Exception
      */
-     public function setSessionHandler($options = null)
-     {
+    protected function _initConnections(array $options)
+    {
+        $this->_resources['connections'] = array();
+        $manager = Doctrine_Manager::getInstance();
 
-        if (isset($options)) {
-
-            // enable by default if any session option is set
-            if (!isset($options['handler'])) {
-                $options['handler'] = true;
+        foreach($options as $key => $value) {
+            if ((!is_array($value)) || (!array_key_exists('dsn', $value))) {
+                require_once 'Zend/Application/Resource/Exception.php';
+                throw new Zend_Application_Resource_Exception("Invalid DSN for connection $key.");
             }
 
-            if ($options['handler']) {
+            $dsn = (is_array($value['dsn']))
+                ? $this->_buildDsnFromArray($value['dsn'])
+                : $value['dsn'];
 
-                if (!empty($options['table'])) {
-                    $table = $options['table'];
-                } else {
-                    $table = 'Session';
-                }
+            $conn = $manager->openConnection($dsn, $key);
+            $this->_resources['connections'][] = $key;
 
-                try {
-                    $handler = new ZendX_Doctrine_Session_SaveHandler();
-                    $handler->setTable($table);
-                    // session lifetime from options
-                    if (isset($options['lifetime']) && $options['lifetime']) {
-                        $handler->setLifetime($options['lifetime']);
-                    }
-                    Zend_Session::setSaveHandler($handler);
-                    Zend_Session::start();
-                } catch (Exception $e) {
-                    throw new ZendX_Doctrine_Application_Resource_Exception('Unable to access Doctrine session table.');
-                }
+            if (array_key_exists('attributes', $value)) {
+                $this->_setAttributes($conn, $value['attributes']);
+            }
+
+            if (array_key_exists('listeners', $value)) {
+                $this->_setConnectionListeners($conn, $value['listeners']);
             }
         }
-
-        return $this;
     }
 
-
     /**
-     * Build connection options string
+     * Set attributes of a Doctrine_Configurable instance
      *
-     * @param  array $optionsData
-     * @return string
+     * @param   Doctrine_Configurable $object
+     * @param   array $attributes
+     * @return  void
+     * @throws  Zend_Application_Resource_Exception
      */
-    private function _buildConnectionOptionsString(array $optionsData = array())
+    protected function _setAttributes(Doctrine_Configurable $object, array $attributes)
     {
-        $i = 0;
-        $count = count($optionsData);
-        $options  = null;
+        $reflect = new ReflectionClass('Doctrine');
+        $doctrineConstants = $reflect->getConstants();
 
-        // @todo Determine if there is a better way to calculate when the end
-        // of the array has been reached
-        foreach ($optionsData as $key => $value) {
-            if ($i == $count) {
-                $options .= "$key=$value";
+        $attributes = array_change_key_case($attributes, CASE_UPPER);
+        foreach ($attributes as $key => $value) {
+            if (!array_key_exists($key, $doctrineConstants)) {
+                require_once 'Zend/Application/Resource/Exception.php';
+                throw new Zend_Application_Resource_Exception("$key is not a valid attribute.");
+            }
+
+            $attrIdx = $doctrineConstants[$key];
+            $attrVal = $value;
+
+            if ((Doctrine::ATTR_RESULT_CACHE == $attrIdx) || (Doctrine::ATTR_QUERY_CACHE == $attrIdx)) {
+                $attrVal = $this->_getCache($value);
             } else {
-                $options .= "$key=$value&";
+                if (is_string($value)) {
+                    $value = strtoupper($value);
+                    if (array_key_exists($value, $doctrineConstants)) {
+                        $attrVal = $doctrineConstants[$value];
+                    }
+                }
             }
 
-            $i++;
+            $object->setAttribute($attrIdx, $attrVal);
+        }
+    }
+
+    /**
+     * Retrieve a Doctrine_Cache instance
+     *
+     * @param   array $options
+     * @return  Doctrine_Cache
+     * @throws  Zend_Application_Resource_Exception
+     */
+    protected function _getCache(array $options)
+    {
+        if (!array_key_exists('class', $options)) {
+            require_once 'Zend/Application/Resource/Exception.php';
+            throw new Zend_Application_Resource_Exception('Missing class option.');
         }
 
-        return $options;
+        $class = $options['class'];
+        if (!class_exists($class)) {
+            require_once 'Zend/Application/Resource/Exception.php';
+            throw new Zend_Application_Resource_Exception("$class does not exist.");
+        }
+
+        $cacheOptions = array();
+        if ((is_array($options['options'])) && (array_key_exists('options', $options))) {
+            $cacheOptions = $options['options'];
+        }
+
+        return new $class($cacheOptions);
+    }
+
+    /**
+     * Set connection listeners
+     *
+     * @param   Doctrine_Connection_Common $conn
+     * @param   array $options
+     * @return  void
+     * @throws  Zend_Application_Resource_Exception
+     */
+    protected function _setConnectionListeners(Doctrine_Connection_Common $conn, array $options)
+    {
+        foreach ($options as $alias => $class) {
+            if (!class_exists($class)) {
+                require_once 'Zend/Application/Resource/Exception.php';
+                throw new Zend_Application_Resource_Exception("$class does not exist.");
+            }
+
+            $conn->addListener(new $class(), $alias);
+        }
+    }
+
+    /**
+     * Build the DSN string
+     *
+     * @param   array $dsn
+     * @return  string
+     */
+    protected function _buildDsnFromArray(array $dsn)
+    {
+        $options = null;
+        if (array_key_exists('options', $dsn)) {
+            $options = $this->_buildDsnOptionsFromArray($dsn['options']);
+        }
+
+        return sprintf('%s://%s:%s@%s/%s?%s',
+            $dsn['adapter'],
+            $dsn['user'],
+            $dsn['pass'],
+            $dsn['hostspec'],
+            $dsn['database'],
+            $options);
+    }
+
+    /**
+     * Build the DSN options string from an array
+     *
+     * @param   array $options
+     * @return  string
+     */
+    protected function _buildDsnOptionsFromArray(array $options)
+    {
+        $optionsString  = '';
+
+        foreach ($options as $key => $value) {
+            if ($value == end($options)) {
+                $optionsString .= "$key=$value";
+            } else {
+                $optionsString .= "$key=$value&";
+            }
+        }
+
+        return $optionsString;
     }
 }

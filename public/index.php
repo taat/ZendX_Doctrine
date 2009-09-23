@@ -22,6 +22,4 @@ $application = new Zend_Application(
     APPLICATION_ENV,
     APPLICATION_PATH . '/configs/application.ini'
 );
-if (APPLICATION_ENV != 'cli') {
-    $application->bootstrap()->run();
-}
+$application->bootstrap()->run();

@@ -11,15 +11,21 @@
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
  * @author     ##NAME## <##EMAIL##>
- * @version    SVN: $Id: Builder.php 5441 2009-01-30 22:58:43Z jwage $
+ * @version    SVN: $Id: Builder.php 5845 2009-06-09 07:36:57Z jwage $
  */
 abstract class BaseTest extends Doctrine_Record
 {
     public function setTableDefinition()
     {
         $this->setTableName('test');
-        $this->hasColumn('testint', 'integer', 4, array('type' => 'integer', 'length' => '4'));
-        $this->hasColumn('teststring', 'string', 50, array('type' => 'string', 'length' => '50'));
+        $this->hasColumn('testint', 'integer', 4, array(
+             'type' => 'integer',
+             'length' => '4',
+             ));
+        $this->hasColumn('teststring', 'string', 50, array(
+             'type' => 'string',
+             'length' => '50',
+             ));
     }
 
 }
